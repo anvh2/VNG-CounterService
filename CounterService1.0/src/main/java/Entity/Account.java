@@ -11,6 +11,15 @@ public class Account {
     @Column
     private long balance;
 
+    public Account(){
+
+    }
+
+    public Account(String user_id, long balance){
+        this.user_id = user_id;
+        this.balance = balance;
+    }
+
     public long getBalance() {
         return balance;
     }

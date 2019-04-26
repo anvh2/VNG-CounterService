@@ -1,15 +1,12 @@
 package server;
 
-
-import DataAccess.AccountDAO;
+import EntityService.AccountService;
 import com.example.grpc.CounterServiceGrpc;
 import com.example.grpc.CounterServiceOuterClass;
 import io.grpc.stub.StreamObserver;
 
-import java.util.concurrent.ExecutionException;
-
 public class CounterServiceImpl extends CounterServiceGrpc.CounterServiceImplBase {
-    private static AccountDAO accountDA = new AccountDAO();
+    private static AccountService service= new AccountService();
 
     @Override
     public void setBalance(CounterServiceOuterClass.UserReq request, StreamObserver<CounterServiceOuterClass.BalanceRes> responseObserver) {
@@ -18,24 +15,10 @@ public class CounterServiceImpl extends CounterServiceGrpc.CounterServiceImplBas
         long balance = request.getBalance();
 
         //set balance from db
-        try {
-            accountDA.setBalance(userId, balance);
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        long balanceres = service.setBalance(userId, balance);
 
         //response balance to client
-        long result = 0;
-        try {
-            result = accountDA.getBalance(userId, balance);
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        responseClient(result, responseObserver);
+        responseClient(balanceres, responseObserver);
     }
 
     @Override
@@ -45,14 +28,7 @@ public class CounterServiceImpl extends CounterServiceGrpc.CounterServiceImplBas
         long balance = request.getBalance();
 
         //get balance from db
-        long balanceres = 0;
-        try {
-            balanceres = accountDA.getBalance(userId, balance);
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        long balanceres = service.getBalance(userId, balance);
 
         //response balance to client
         responseClient(balanceres, responseObserver);
@@ -65,24 +41,10 @@ public class CounterServiceImpl extends CounterServiceGrpc.CounterServiceImplBas
         long amount = request.getBalance();
 
         //decrease balance from db
-        try {
-            accountDA.decreaseBalance(userId, amount);
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        long balanceres = service.decreaseBalance(userId, amount);
 
         //response balance to client
-        long result = 0;
-        try {
-            result = accountDA.getBalance(userId, amount);
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        responseClient(result, responseObserver);
+        responseClient(balanceres, responseObserver);
     }
 
     @Override
@@ -92,24 +54,10 @@ public class CounterServiceImpl extends CounterServiceGrpc.CounterServiceImplBas
         long amount = request.getBalance();
 
         //decrease balance from db
-        try {
-            accountDA.increaseBalance(userId, amount);
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        long balanceres = service.increaseBalance(userId, amount);
 
         //response balance to client
-        long result = 0;
-        try {
-            result = accountDA.getBalance(userId, amount);
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        responseClient(result, responseObserver);
+        responseClient(balanceres, responseObserver);
     }
 
     private void responseClient(long balance, StreamObserver<CounterServiceOuterClass.BalanceRes> responseObserver) {
