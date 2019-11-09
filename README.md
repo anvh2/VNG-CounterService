@@ -1,1 +1,1 @@
-# VNG-CounterService
+# CounterService
